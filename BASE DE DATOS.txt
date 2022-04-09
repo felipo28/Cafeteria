@@ -1,3 +1,26 @@
+CREATE TABLE CATEGORIA(
+ID_CATEGORIA NUMBER PRIMARY KEY,
+NOM_CATEGORIA VARCHAR2(200) NOT NULL
+);
+
+CREATE SEQUENCE id_seq_categoria START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER TRIG_ID_categoria
+BEFORE INSERT ON categoria
+FOR EACH ROW
+BEGIN
+SELECT id_seq_categoria.NEXTVAL INTO :NEW.ID_categoria FROM DUAL;
+END;
+
+Insert into CATEGORIA (NOM_CATEGORIA) values ('CAFE');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('BEBIDAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('ESPRESSO');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('PASTELILLOS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('EXTRAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('MALTEADAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('FRAPPES');
+
+
 /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 CREATE TABLE productos(
@@ -27,28 +50,6 @@ values ('LATTE','CAFE LATTE CANDY','8000','20','1','18000','08/04/22');
 Insert into PRODUCTOS (NOM_PRODUCTO, REFERENCIA, PRECIO, PESO, ID_CATEGORIA, STOCK, FECHA_CREACION) 
 values ('espreso','SELLO ROJO','5000','12','1','1000','12/05/00');
 
-/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-CREATE TABLE CATEGORIA(
-ID_CATEGORIA NUMBER PRIMARY KEY,
-NOM_CATEGORIA VARCHAR2(200) NOT NULL
-);
-
-CREATE SEQUENCE id_seq_categoria START WITH 1 INCREMENT BY 1;
-
-CREATE TRIGGER TRIG_ID_categoria
-BEFORE INSERT ON categoria
-FOR EACH ROW
-BEGIN
-SELECT id_seq_categoria.NEXTVAL INTO :NEW.ID_categoria FROM DUAL;
-END;
-
-Insert into CATEGORIA (NOM_CATEGORIA) values ('CAFE');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('BEBIDAS');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('ESPRESSO');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('PASTELILLOS');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('EXTRAS');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('MALTEADAS');
-Insert into CATEGORIA (NOM_CATEGORIA) values ('FRAPPES');
 /*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 CREATE TABLE VENTA(
