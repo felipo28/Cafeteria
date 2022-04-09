@@ -1,0 +1,110 @@
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+CREATE TABLE productos(
+ID NUMBER(20) PRIMARY KEY,
+NOM_PRODUCTO VARCHAR2(200),
+REFERENCIA VARCHAR2(200),
+PRECIO NUMBER(20),
+PESO NUMBER(20),
+CATEGORIA VARCHAR2(200),
+STOCK NUMBER(20),
+FECHA_CREACION DATE
+);
+
+CREATE SEQUENCE id_seq START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER TRIG_ID
+BEFORE INSERT ON productos
+FOR EACH ROW
+BEGIN
+SELECT id_seq.NEXTVAL INTO :NEW.ID FROM DUAL;
+END;
+
+Insert into PRODUCTOS (NOM_PRODUCTO, REFERENCIA, PRECIO, PESO, ID_CATEGORIA, STOCK, FECHA_CREACION) 
+values ('Jugos','NATURAL','3000','8','2','2000','08/04/22');
+Insert into PRODUCTOS (NOM_PRODUCTO, REFERENCIA, PRECIO, PESO, ID_CATEGORIA, STOCK, FECHA_CREACION) 
+values ('LATTE','CAFE LATTE CANDY','8000','20','1','18000','08/04/22');
+Insert into PRODUCTOS (NOM_PRODUCTO, REFERENCIA, PRECIO, PESO, ID_CATEGORIA, STOCK, FECHA_CREACION) 
+values ('espreso','SELLO ROJO','5000','12','1','1000','12/05/00');
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+CREATE TABLE CATEGORIA(
+ID_CATEGORIA NUMBER PRIMARY KEY,
+NOM_CATEGORIA VARCHAR2(200) NOT NULL
+);
+
+CREATE SEQUENCE id_seq_categoria START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER TRIG_ID_categoria
+BEFORE INSERT ON categoria
+FOR EACH ROW
+BEGIN
+SELECT id_seq_categoria.NEXTVAL INTO :NEW.ID_categoria FROM DUAL;
+END;
+
+Insert into CATEGORIA (NOM_CATEGORIA) values ('CAFE');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('BEBIDAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('ESPRESSO');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('PASTELILLOS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('EXTRAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('MALTEADAS');
+Insert into CATEGORIA (NOM_CATEGORIA) values ('FRAPPES');
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+CREATE TABLE VENTA(
+ID_VENTA NUMBER,
+STOCK_VENDIDO NUMBER,
+NOMBRE_CLIENTE VARCHAR2(200),
+TELEFONO NUMBER,
+FECHA_COMPRA DATE,
+IDPRODUCTO NUMBER REFERENCES PRODUCTOS(ID)
+);
+
+CREATE SEQUENCE id_seq_venta START WITH 1 INCREMENT BY 1;
+
+CREATE TRIGGER TRIG_ID_VENTA
+BEFORE INSERT ON VENTA
+FOR EACH ROW
+BEGIN
+SELECT id_seq_venta.NEXTVAL INTO :NEW.ID_VENTA FROM DUAL;
+END;
+
+INSERT INTO VENTA (STOCK_VENDIDO, NOMBRE_CLIENTE, TELEFONO, FECHA_COMPRA, IDPRODUCTO)
+VALUES (18, 'ANDRES', 3219954916, '28-06-2000', 1);
+
+INSERT INTO VENTA (STOCK_VENDIDO, NOMBRE_CLIENTE, TELEFONO, FECHA_COMPRA, IDPRODUCTO)
+VALUES (18, 'DIEGO', 3219954916, '28-06-2000', 2);
+
+INSERT INTO VENTA (STOCK_VENDIDO, NOMBRE_CLIENTE, TELEFONO, FECHA_COMPRA, IDPRODUCTO)
+VALUES (18, 'FELIPE', 3219954916, '28-06-2000', 3);
+
+INSERT INTO VENTA (STOCK_VENDIDO, NOMBRE_CLIENTE, TELEFONO, FECHA_COMPRA, IDPRODUCTO)
+VALUES (18, 'KAREN', 3219954916, '28-06-2000', 1);
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Realizar una consulta que permita conocer cuál es el producto que más stock tiene.*/
+
+/* V1 */
+SELECT * FROM PRODUCTOS
+WHERE STOCK = (SELECT MAX(STOCK) FROM PRODUCTOS)
+ORDER BY ID
+
+/* V1 */
+SELECT NOM_PRODUCTO, REFERENCIA, PRECIO, PESO, c.NOM_CATEGORIA, STOCK, FECHA_CREACION FROM PRODUCTOS
+inner join categoria c on c.ID_CATEGORIA = PRODUCTOS.Id_categoria
+WHERE STOCK = (SELECT MAX(STOCK) FROM PRODUCTOS)
+ORDER BY ID;
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/*Realizar una consulta que permita conocer cuál es el producto más vendido.*/
+
+select distinct count(v.idproducto) as numVentas, c.NOM_CATEGORIA 
+from venta v
+Inner join Productos P ON P.id = V.Idproducto
+Inner join Categoria C ON C.ID_CATEGORIA = P.Id_categoria
+group by v.idproducto, c.NOM_CATEGORIA 
+
+
+
